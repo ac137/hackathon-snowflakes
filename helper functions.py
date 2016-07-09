@@ -34,10 +34,12 @@ def average_nearest(arr):
 	# sum of 1 column to the left, row above, and row below
 	u = arr[0:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
 	# average alternating columns with layer above:
-	v = arr[1:-1,1::2,1:-1] # odd rows
-	w = arr[1:-1,2::2,1:-1] # even rows
-	# add layer above 
-	v += arr[1:-1,1::2,2:]
+	v = arr[1:-1,1::2,1:-1] # odd columns
+	w = arr[1:-1,2::2,1:-1] # even columns
+	# add layer above to alternating rows
+	v[::2,:,:] += arr[1:-1:2,1::2,2:]
+	# add layer below to alternating rows
+	v[1::2,:,:] += arr[2:-1:2,1::2,0:-2]
 	# add layer below
 	w += arr[1:-1,2::2,:-2]
 	u[:,::2,1:-1] += v
