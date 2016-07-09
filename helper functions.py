@@ -27,4 +27,11 @@ def initialize_array(side_len, b):
 	arr = ones((side_len,side_len,side_len))*b
 	mid = side_len/2
 	arr[mid,mid,mid] = 1.0
-	return arr 
+	return arr
+
+def average_nearest(arr):
+	# welcome to slicing hell
+	# sum of point, 1 column to the left, row above, and row below
+	u = arr[1:-1,1:,1:-1] + arr[0:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
+	# average alternating rows with layer above:
+	v = arr[1:,]
