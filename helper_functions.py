@@ -3,6 +3,7 @@
 from numpy import ones, concatenate
 
 def get_nearest_neightbours_plane(arr, idx):
+	# this function is kind of obsolete
 	# index tuple of row, column
 	r,c = idx[0],idx[1]
 	n1, n2, n3 = None, None, None
