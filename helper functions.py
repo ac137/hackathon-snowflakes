@@ -1,6 +1,6 @@
 # snowflake thing
 
-from numpy import ones
+from numpy import ones, concatenate
 
 def get_nearest_neightbours_plane(arr, idx):
 	# index tuple of row, column
@@ -54,6 +54,18 @@ def average_nearest(arr):
 	# probably best to use some sort of numpy stack thing
 	# a bunch of numpy stack things
 	# ughghhh
+
+	# array sandwich - add top & bottom
+	u = concatenate(arr[1:-1,1:,0],u,arr[1:-1,1:,-1], axis=2)
+	# add row above and below, we have all the layers now
+	u = concatenate(arr[0,1:,:],u,arr[-1,1:,:], axis=0)
+	# add column to the left, have all layers and rows now
+	u = concatenate(arr[:,0,:],u)
+
+	# we are done, ugh
+	return u
+
+
 
 
 
