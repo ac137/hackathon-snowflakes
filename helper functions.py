@@ -32,15 +32,29 @@ def initialize_array(side_len, b):
 def average_nearest(arr):
 	# welcome to slicing hell
 	# sum of 1 column to the left, row above, and row below
-	u = arr[0:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
+	u = arr[:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
 	# average alternating columns with layer above:
 	v = arr[1:-1,1::2,1:-1] # odd columns
 	w = arr[1:-1,2::2,1:-1] # even columns
 	# add layer above to alternating rows
 	v[::2,:,:] += arr[1:-1:2,1::2,2:]
-	# add layer below to alternating rows
+	# add layer below to the other rows
 	v[1::2,:,:] += arr[2:-1:2,1::2,0:-2]
-	# add layer below
-	w += arr[1:-1,2::2,:-2]
+	# add layer below to the alternating rows
+	w[::2,:,:] += arr[1:-1:2,2::2,:-2]
+	# add layer above to the other rows
+	w[1::2,:,:] += arr[2:-1:2,2::2,2:]
+	# combine this whole ungodly mess
 	u[:,::2,1:-1] += v
 	u[:,1::2,1:-1] += w
+	# divide by 5 to get average
+	u /= 5. #this syntax is glorious
+
+	# now need to recombine with original array arr
+	# probably best to use some sort of numpy stack thing
+	# a bunch of numpy stack things
+	# ughghhh
+
+
+
+
