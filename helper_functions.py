@@ -36,7 +36,7 @@ def average_nearest(arr):
 	# welcome to slicing hell
 	# ROW, COLUMN, DEPTH
 	# sum of row above, row below, 1 column to the left
-	u = arr[:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
+	u = arr[:-2,1:-1,1:-1] + arr[2:,1:-1,1:-1] + arr[1:-1,:-2,1:-1]
 	# select alternating columns, exclude leftmost col, outer rows, outer layers:
 	# this is okay
 	v = arr[1:-1,1::2,1:-1]
@@ -46,20 +46,26 @@ def average_nearest(arr):
 
 	# odd columns
 	# add lower layer
-	v[::2,:,:] += arr[1:-1:2,1::2,2:]
+	v[::2,:,:] = arr[1:-1:2,1::2,2:]
 	# add upper layer
-	v[1::2,:,:] += arr[2:-1:2,1::2,:-2]
+	v[1::2,:,:] = arr[2:-1:2,1::2,:-2]
 
 	# even columns
 	# add upper layer
-	w[::2,:,:] += arr[1:-1:2,2::2,:-2]
+	w[::2,:,:] = arr[1:-1:2,2::2,:-2]
 	# add lower layer
-	w[1::2,:,:] += arr[2:-1:2,2::2,2:]
+	w[1::2,:,:] = arr[2:-1:2,2::2,2:]
 
-	# add these back into u, respecting the slicing conventions.
+	# now v,w are matrices corresponding to odd & even columns
 
-	u[:,::2,:] += v
-	u[:,1::2,:] += w
+	# initialize array with same shape as array
+	k = zeros(shape(arr))
+	k[1:-1,1::2,1:-1] += v
+	k[1:-1,2::2,1:-1] += w
+
+	# k is now an array which has the values from columns above & below
+	# that we would like to add
+
 
 	# divide by 5 to get average
 	u /= 5. #this syntax is glorious
