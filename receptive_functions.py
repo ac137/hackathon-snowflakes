@@ -52,8 +52,7 @@ def receptive_ind(arr, z):
     '''
 
     # get indices of ice cells
-    i_I = arr >= .95 #1.0
-    print i_I
+    i_I = arr >= 1.0
     
     # get indices of neighbouring cells in same plane
         # from left column
@@ -72,8 +71,8 @@ def receptive_ind(arr, z):
     
     # return indices of all receptive cells
     IND = i_I + i_LEFT + i_TOP + i_BOTTOM + i_ABOVE + i_BELOW
-    print "final"
-    return IND
+    # (also return indices of ice cells)
+    return IND, i_I
 
 print receptive_ind(arr,z)
 
