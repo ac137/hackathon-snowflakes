@@ -1,7 +1,7 @@
 from numpy import *
 
 size_condition = False
-side_len = 20
+side_len = 6
 
 I = zeros((side_len,side_len,side_len),dtype=bool)
 I[side_len-5,side_len/2,side_len/2] = True
@@ -14,3 +14,5 @@ BORDER[5,:,:] = BORDER[side_len-5,:,:] = BORDER[:,5,:] = BORDER[:,side_len-5,:] 
 if any(BORDER*I) == True:
     size_condition = True
     print "Snowflake has outgrown the grid! Ending simulation."
+
+print BORDER
