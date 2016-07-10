@@ -40,7 +40,6 @@ def average_nearest(arr):
 	# this is an (n-2)x(n-2)xn array
 
 	tot_sum = copy(q_arr) # contains q-values
-	print q_arr 
 	tot_sum[1:-1,1:-1,:] = copy(tot_sum[1:-1,1:-1,:]) + p_sum # now also added the 3 p-values
 	tot_sum = tot_sum + arr # added the original value at the element
 	tot_sum /= 5. # average it up
