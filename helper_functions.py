@@ -1,8 +1,11 @@
 # snowflake thing
 
-from numpy import ones, concatenate
+# need to add weights at some point.
+
+from numpy import ones, vstack, hstack, dstack, newaxis, shape,array
 
 def get_nearest_neightbours_plane(arr, idx):
+	# this function is kind of obsolete
 	# index tuple of row, column
 	r,c = idx[0],idx[1]
 	n1, n2, n3 = None, None, None
@@ -31,22 +34,33 @@ def initialize_array(side_len, b):
 
 def average_nearest(arr):
 	# welcome to slicing hell
-	# sum of 1 column to the left, row above, and row below
+	# ROW, COLUMN, DEPTH
+	# sum of row above, row below, 1 column to the left
 	u = arr[:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
-	# average alternating columns with layer above:
-	v = arr[1:-1,1::2,1:-1] # odd columns
-	w = arr[1:-1,2::2,1:-1] # even columns
-	# add layer above to alternating rows
+	# select alternating columns, exclude leftmost col, outer rows, outer layers:
+	# this is okay
+	v = arr[1:-1,1::2,1:-1]
+	w = arr[1:-1,2::2,1:-1]
+
+	# take alternating rows & add values from lower/upper layers
+
+	# odd columns
+	# add lower layer
 	v[::2,:,:] += arr[1:-1:2,1::2,2:]
-	# add layer below to the other rows
-	v[1::2,:,:] += arr[2:-1:2,1::2,0:-2]
-	# add layer below to the alternating rows
+	# add upper layer
+	v[1::2,:,:] += arr[2:-1:2,1::2,:-2]
+
+	# even columns
+	# add upper layer
 	w[::2,:,:] += arr[1:-1:2,2::2,:-2]
-	# add layer above to the other rows
+	# add lower layer
 	w[1::2,:,:] += arr[2:-1:2,2::2,2:]
-	# combine this whole ungodly mess
-	u[:,::2,1:-1] += v
-	u[:,1::2,1:-1] += w
+
+	# add these back into u, respecting the slicing conventions.
+
+	u[:,::2,:] += v
+	u[:,1::2,:] += w
+
 	# divide by 5 to get average
 	u /= 5. #this syntax is glorious
 
@@ -56,13 +70,17 @@ def average_nearest(arr):
 	# ughghhh
 
 	# array sandwich - add top & bottom
-	u = concatenate(arr[1:-1,1:,0],u,arr[1:-1,1:,-1], axis=2)
-	# add row above and below, we have all the layers now
-	u = concatenate(arr[0,1:,:],u,arr[-1,1:,:], axis=0)
-	# add column to the left, have all layers and rows now
-	u = concatenate(arr[:,0,:],u)
 
-	# we are done, ugh
+	# add top row and bottom row:
+
+	u = vstack((arr[newaxis,0,1:,1:-1],u))
+	u = vstack((u, arr[newaxis,-1,1:,1:-1]))
+	# add column to left, have all rows missing layers
+	u = hstack((arr[:,0,newaxis,1:-1],u))
+	# have all rows, columns, add layers to top & bottom
+	u = dstack((arr[:,:,0,newaxis],u))
+	u = dstack((u,arr[:,:,-1,newaxis]))
+
 	return u
 
 
