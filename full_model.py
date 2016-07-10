@@ -1,11 +1,17 @@
-###################################################################################################################
-##      Snowflake Simulation code
-##      created by Alex Cabaj and Mary Miedema
-##      (cite paper)
-##
-###################################################################################################################
+##########################################################################################################################
+##      Snowflake Growth Simulation                                                                                     ##
+##      created by Alex Cabaj and Mary Miedema                                                                          ##
+##      at the McGill Physics Hackathon                                                                                 ##
+##      July 9th-10th, 2016                                                                                             ##
+##                                                                                                                      ##
+##      Our approach to snowflake crystallization was influenced by methods outlined by Ning and Reiter                 ##
+##      (Computers & Graphics, 2007); all code used in this file and in "snowflake_functions.py" is our                 ##
+##      own original implementation.                                                                                    ##
+##                                                                                                                      ##
+##########################################################################################################################
 
-from final_functions import *
+# import our analysis functions from "snowflake_functions.py"
+from snowflake_functions import *
 from numpy import *
 import pickle
 
@@ -13,7 +19,7 @@ import pickle
 # alpha is an indication of temperature
 alpha = 1
 # beta is an indication of saturation, 0 < beta < 1
-beta = .25
+beta = .45
 
 # choose scale of model grid;
     # side_len should be an even integer
@@ -38,38 +44,6 @@ z = zeros((side_len,side_len),dtype=bool)
 t_steps = []
 state_data = []
 
-
-##def model_step(alpha, beta,S,R):
-##    # split state array in two;
-##        # one with zeros in non-receptive cells
-##        # we consider material in the remaining 
-##        # receptive cells to be bound in place
-##    S_R = S[R]
-##        # one with zeros in receptive cells
-##        # (and thus containing material free to diffuse)
-##    S_NR = S[invert(R)]
-##
-##    # average material over non-receptive cells
-##    S_NR_AVG = average_nearest(S_NR, beta)
-##
-##    # recombine into single state array
-##    S_2 = S_R + S_NR_AVG
-##
-##    # find positions of ice cells and nearest neighbours
-##    R, I = receptive_ind(S_2, z)
-##    S = copy(S_2)
-##    # state value cannot exceed 1
-##    S[I] = 1.0
-##    
-##    # sum over borders of receptive array to
-##        # check that snowflake has not outgrown model
-##    if any(BORDER*I) == True:
-##        size_condition = True
-##        print "Snowflake has outgrown the grid! Ending simulation."
-##
-##    return S, R
-
-# if this doesn't work, try creating g file for each time step
 g = open('snowflake_model'+str(beta)+'.p', 'w')   # create pickle file
 
         
@@ -89,7 +63,7 @@ while size_condition == False:
     S_NR = copy(S)*invert(R)
 
     # average material over non-receptive cells
-    S_NR_AVG = average_nearest(S_NR, beta,side_len)
+    S_NR_AVG = average_nearest(S_NR, alpha, beta, side_len)
 
     # recombine into single state array
     S_2 = S_R + S_NR_AVG
