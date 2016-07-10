@@ -1,6 +1,6 @@
 # snowflake thing
 
-from numpy import ones, vstack
+from numpy import ones, vstack, hstack, dstack, newaxis, shape
 
 def get_nearest_neightbours_plane(arr, idx):
 	# this function is kind of obsolete
@@ -53,8 +53,11 @@ def average_nearest(arr):
 	#print v
 	#print u[1:-1,:,::2]
 
-	u[1:-1,:,::2] += v
-	u[1:-1,:,1::2] += w
+	print 'slice \n' + str(u[:,:,::2])
+	print 'slice 2 \n' + str(u[:,:,1::2])
+
+	u[:,:,::2] += v
+	u[:,:,1::2] += w
 	# divide by 5 to get average
 	u /= 5. #this syntax is glorious
 
@@ -65,11 +68,18 @@ def average_nearest(arr):
 
 	# array sandwich - add top & bottom
 
+	print 'u \n' + str(u)
+
 	u = vstack(([arr[0,1:-1,1:]],u,[arr[-1,1:-1,1:]]))
+
+	print 'u \n' + str(u)
 	# add row above and below, we have all the layers now
-	u = vstack(([arr[:,0,1:]],u,[arr[:,-1,1:]]))
+	print 'slice \n' + str(arr[:,0,newaxis,1:])
+	print shape(u)
+	print shape(arr[:,0,newaxis,1:])
+	u = hstack((arr[:,0,newaxis,1:],u,arr[:,-1,newaxis,1:]))
 	# add column to the left, have all layers and rows now
-	u = vstack(([arr[:,:,0]],u))
+	u = dstack(([arr[:,:,0]],u))
 
 	# we are done, ugh
 	return u
