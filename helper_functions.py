@@ -34,27 +34,33 @@ def average_nearest(arr):
 	# welcome to slicing hell
 	# INDEXING IS LAYER, ROW, COLUMN!!!
 
-	# sum of 1 column to the left, row above, and row below
+	# sum of row above, row below, 1 column to the left
 	u = arr[1:-1,:-2,1:] + arr[1:-1,2:,1:] + arr[1:-1,1:-1,:-1]
-	# average alternating columns with layer above:
-	v = arr[1:-1,1:-1,1::2] # odd columns
-	w = arr[1:-1,1:-1,2::2] # even columns
-	print "v " + str(v)
-	print "w" + str(w)
-	# add layer above to alternating rows
-	v[:,::2,:] += arr[2:,1:-1:2,1::2]
-	# add layer below to the other rows
-	v[:,1::2,:] += arr[0:-2,2:-1:2,1::2]
-	# add layer below to the alternating rows
-	w[:,::2,:] += arr[:-2,1:-1:2,2::2]
-	# add layer above to the other rows
-	w[:,1::2,:] += arr[2:,2:-1:2,2::2]
-	# combine this whole ungodly mess
-	#print v
-	#print u[1:-1,:,::2]
+	# # average alternating columns with layer above:
+	# v = arr[1:-1,1:-1,1::2] # odd columns
+	# w = arr[1:-1,1:-1,2::2] # even columns
+	# # add layer above to alternating rows
+	# v[:,::2,:] += arr[2:,1:-1:2,1::2]
+	# # add layer below to the other rows
+	# v[:,1::2,:] += arr[0:-2,2:-1:2,1::2]
+	# # add layer below to the alternating rows
+	# w[:,::2,:] += arr[:-2,1:-1:2,2::2]
+	# # add layer above to the other rows
+	# w[:,1::2,:] += arr[2:,2:-1:2,2::2]
+	# # combine this whole ungodly mess
 
-	print 'slice \n' + str(u[:,:,::2])
-	print 'slice 2 \n' + str(u[:,:,1::2])
+	# select even rows, excluding top & bottom rows, exclude leftmost column, top & bot layers
+	v = arr[1:-1:2,1:,1:-1]
+	# select odd rows, " 
+	w = arr[2:-1:2,1:,1:-1]
+	# add layer below to alternating cols
+	v[:,::2,:] += arr[1:-1:2,1::2,1:-1]
+	# add layer above to the other cols
+	v[:,1::2,:] += arr[1:-1:2,2::2,1:-1]
+	# add layer below to alternating cols in odd rows
+	w[:,::2,:] += arr[2:-1:2,1::2]
+
+
 
 	u[:,:,::2] += v
 	u[:,:,1::2] += w
@@ -68,28 +74,13 @@ def average_nearest(arr):
 
 	# array sandwich - add top & bottom
 
-	print 'u \n' + str(u)
-
 	u = vstack(([arr[0,1:-1,1:]],u,[arr[-1,1:-1,1:]]))
-	print shape(u)
-	print shape(array([arr[0,1:-1,1:]]))
-
-	print 'u \n' + str(u)
-	# add row above and below, we have all the layers now
-	print 'slice \n' + str(arr[:,0,newaxis,1:])
-	print shape(u)
-	print shape(arr[:,0,newaxis,1:])
-	print shape(arr[:,-1,newaxis,1:])
-
 	u = hstack((arr[:,0,newaxis,1:],u))
 	u = hstack((u, arr[:,-1,newaxis,1:]))
-	print 'u \n' + str(u)
 	# add column to the left, have all layers and rows now
 	u = dstack((arr[:,:,0,newaxis],u))
-	print 'u \n' + str(u)
-
-
 	# we are done, ugh
+
 	return u
 
 
