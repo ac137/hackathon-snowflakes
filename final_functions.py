@@ -1,13 +1,9 @@
 from numpy import *
 
-side_len = 4
-
 ##arr = random.rand(side_len,side_len,side_len)
 ##arr = zeros((side_len,side_len,side_len))
 ##arr[1,2,3]=.8
 ##print arr
-
-z = zeros((side_len,side_len),dtype=bool)
 
 def checkerboard(side_len, boolean, num):
     '''Creates a "cubic checkerboard" of sorts.
@@ -47,7 +43,7 @@ def checkerboard(side_len, boolean, num):
         print "Argument for Boolean variable not recognized."
 
 
-def receptive_ind(arr, z):
+def receptive_ind(arr, z, side_len):
     ''' Function to find indices of all receptive cells              
         arr: recombined matrix
         z: define outside loop as z = zeros(side_len, side_len,dtype=bool)
@@ -101,13 +97,17 @@ def pad_beta(arr,beta):
     lg_int += arr
     return one_lg
 
-def average_nearest(arr, beta):
+def average_nearest(arr, beta, side_len):
     '''Function to average value of cell with itself and its
         four nearest neighbours.
     '''
     
     # sum of nearest neighbours in same plane
-    u = arr[:-2,1:-1,1:-1] + arr[2:,1:-1,1:-1] + arr[1:-1,:-2,1:-1]
+    #u = arr[:-2,1:-1,1:-1] + arr[2:,1:-1,1:-1] + arr[1:-1,:-2,1:-1]
+    u1 = arr[:-2,1:-1,1:-1]
+    u2 = arr[2:,1:-1,1:-1]
+    u3 = arr[1:-1,:-2,1:-1]
+    u = u1 + u2 + u3
     # sum of adjacent planes
     c1 = checkerboard(side_len, False, 0)*arr
     c2 = checkerboard(side_len, False, 1)*arr
