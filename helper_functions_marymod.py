@@ -80,12 +80,13 @@ def average_nearest(arr):
 
 	# add top row and bottom row:
 
-	u = vstack((arr[newaxis,0,1:,1:-1],u))
-	u = vstack((u, arr[newaxis,-1,1:,1:-1]))
+	k = vstack((arr[newaxis,0,1:,1:-1],k))
+	k = vstack((k, arr[newaxis,-1,1:,1:-1]))
 	# add column to left, have all rows missing layers
-	u = hstack((arr[:,0,newaxis,1:-1],u))
+	k = hstack((arr[:,0,newaxis,1:-1],k))
+    k = hstack((k,arr[:,-1,newaxis,1:-1]))
 	# have all rows, columns, add layers to top & bottom
-	u = dstack((arr[:,:,0,newaxis],u))
-	u = dstack((u,arr[:,:,-1,newaxis]))
+	k = dstack((arr[:,:,0,newaxis],k))
+	k = dstack((u,arr[:,:,-1,newaxis]))
 
-	return u
+	return k
