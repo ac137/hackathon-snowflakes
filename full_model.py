@@ -19,7 +19,7 @@ import pickle
 # alpha is an indication of temperature
 alpha = 1
 # beta is an indication of saturation, 0 < beta < 1
-beta = .45
+beta = .25
 
 # choose scale of model grid;
     # side_len should be an even integer
@@ -91,6 +91,6 @@ while size_condition == False:
     state_data.append(S)
     
 # write data
-pickle.dump(array(state_data), g)
-  
+#pickle.dump(array(state_data), g)
+pickle.dump(S, g) 
 g.close()
