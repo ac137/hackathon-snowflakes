@@ -2,7 +2,7 @@
 
 # need to add weights at some point.
 
-from numpy import ones, vstack, hstack, dstack, newaxis, shape,array
+from numpy import ones, vstack, hstack, dstack, newaxis, shape, array, zeros, r_
 
 side_len = 6
 
@@ -51,42 +51,30 @@ def initialize_array(side_len, b):
 	return arr
 
 def average_nearest(arr):
-	# welcome to slicing hell
-	# ROW, COLUMN, DEPTH
-	# sum of row above, row below, 1 column to the left
-	u = arr[:-2,1:-1,1:-1] + arr[2:,1:-1,1:-1] + arr[1:-1,:-2,1:-1]
+    # welcome to slicing hell
+    # ROW, COLUMN, DEPTH
+    # sum of row above, row below, 1 column to the left
+    u = arr[:-2,1:-1,1:-1] + arr[2:,1:-1,1:-1] + arr[1:-1,:-2,1:-1]
 
-	# sum of adjacent planes
-	c1 = checkerboard(side_len, False, 0)
-	c2 = checkerboard(side_len, False, 1)
-	v = c1*arr[1:-1,1:-1,2:] + c2*arr[1:-1,1:-1,:-2]
-	w = arr[1:-1,1:-1,1:-1]
+    # sum of adjacent planes
+    c1 = checkerboard(side_len, False, 0)
+    c2 = checkerboard(side_len, False, 1)
+    v = c1*arr[1:-1,1:-1,2:] + c2*arr[1:-1,1:-1,:-2]
+    w = arr[1:-1,1:-1,1:-1]
 
-	k = u + v + w
-	
-	# k is now an array which has the values from columns above & below
-	# that we would like to add
+    k = u + v + w
 
+    # k is now an array which has the values from columns above & below
+    # that we would like to add
+    # divide by 5 to get average
+    k /= 5. #this syntax is glorious
 
-	# divide by 5 to get average
-	k /= 5. #this syntax is glorious
-
-	# now need to recombine with original array arr
-	# probably best to use some sort of numpy stack thing
-	# a bunch of numpy stack things
-	# ughghhh
-
-	# array sandwich - add top & bottom
-
-	# add top row and bottom row:
-
-	k = vstack((arr[newaxis,0,1:,1:-1],k))
-	k = vstack((k, arr[newaxis,-1,1:,1:-1]))
-	# add column to left, have all rows missing layers
-	k = hstack((arr[:,0,newaxis,1:-1],k))
+    k = vstack((arr[newaxis,0,1:,1:-1],k))
+    k = vstack((k, arr[newaxis,-1,1:,1:-1]))
+    k = hstack((arr[:,0,newaxis,1:-1],k))
     k = hstack((k,arr[:,-1,newaxis,1:-1]))
-	# have all rows, columns, add layers to top & bottom
-	k = dstack((arr[:,:,0,newaxis],k))
-	k = dstack((u,arr[:,:,-1,newaxis]))
+    # have all rows, columns, add layers to top & bottom
+    k = dstack((arr[:,:,0,newaxis],k))
+    k = dstack((u,arr[:,:,-1,newaxis]))
 
-	return k
+    return k
