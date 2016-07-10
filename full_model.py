@@ -5,7 +5,7 @@
 ##
 ###################################################################################################################
 
-from final_functions.py import *
+from final_functions import *
 from numpy import *
 import pickle
 
@@ -17,7 +17,7 @@ beta = .25
 
 # choose scale of model grid;
     # side_len should be an even integer
-side_len = 10
+side_len = 14
 size_condition = False
 # create border array
 BORDER = zeros((side_len,side_len,side_len),dtype=bool)
@@ -39,7 +39,7 @@ t_steps = []
 data = []
 
 
-def model_step(alpha, beta):
+def model_step(alpha, beta,S,R):
     # split state array in two;
         # one with zeros in non-receptive cells
         # we consider material in the remaining 
@@ -67,6 +67,8 @@ def model_step(alpha, beta):
         size_condition = True
         print "Snowflake has outgrown the grid! Ending simulation."
 
+    return S, R
+
 # if this doesn't work, try creating g file for each time step
 g = open('snowflake_model'+str(beta)+'.p', 'w')   # create pickle file
 
@@ -75,11 +77,11 @@ g = open('snowflake_model'+str(beta)+'.p', 'w')   # create pickle file
 j = 1
 while size_condition == False:
     # take step
-    model_step(alpha, beta)
+    S_step, R_step = model_step(alpha, beta,S,R)
     j += 1
     if j%40 == 0:
         print "Time step: ", j
     # write data
-    pickle.dump(S, g) 
+    pickle.dump(S_step, g) 
     
 g.close()
