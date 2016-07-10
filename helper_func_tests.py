@@ -1,7 +1,7 @@
 # test stuff 
 
 import unittest
-from numpy import array, concatenate, insert
+from numpy import array, concatenate, insert, vstack, append
 from helper_functions import average_nearest 
 
 u = array([[[1,2,3,4],[9,8,6,4],[21,23,25,26],[3,2,4,3]],
@@ -11,18 +11,12 @@ u = array([[[1,2,3,4],[9,8,6,4],[21,23,25,26],[3,2,4,3]],
 
 mid_vals = array([[[2,5,3,1],[7,10.6,3,5.8],[4,10.8,14.4,8.4],[2,8,12,18]],
 [[5,46,30,84],[1,19.2,9.2,18.2],[0,9.8,2.2,5.2],[4,8,0,2]]])
-print mid_vals
-print mid_vals.shape
-print u[:,:,0].shape
 
-print u[0,:,:]
-print u[0,0,:]
-print u[0,:,0]
-
-#u_1 = insert(mid_vals,0,u[:,:,0],axis=2)
-#print u_1
-
-#def test_average_1():
-#	self.assertEqual(u_av, average_nearest(u))
+class TestAverage(unittest.TestCase):
+	def test(self):
+		self.assertEqual(u_av, average_nearest(u))
 
 #print u
+
+#if __name__ == '__main__':
+#    unittest.main()

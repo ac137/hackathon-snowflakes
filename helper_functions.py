@@ -1,6 +1,6 @@
 # snowflake thing
 
-from numpy import ones, concatenate
+from numpy import ones, vstack
 
 def get_nearest_neightbours_plane(arr, idx):
 	# this function is kind of obsolete
@@ -39,6 +39,8 @@ def average_nearest(arr):
 	# average alternating columns with layer above:
 	v = arr[1:-1,1:-1,1::2] # odd columns
 	w = arr[1:-1,1:-1,2::2] # even columns
+	print "v " + str(v)
+	print "w" + str(w)
 	# add layer above to alternating rows
 	v[:,::2,:] += arr[2:,1:-1:2,1::2]
 	# add layer below to the other rows
@@ -48,6 +50,9 @@ def average_nearest(arr):
 	# add layer above to the other rows
 	w[:,1::2,:] += arr[2:,2:-1:2,2::2]
 	# combine this whole ungodly mess
+	#print v
+	#print u[1:-1,:,::2]
+
 	u[1:-1,:,::2] += v
 	u[1:-1,:,1::2] += w
 	# divide by 5 to get average
@@ -59,11 +64,12 @@ def average_nearest(arr):
 	# ughghhh
 
 	# array sandwich - add top & bottom
-	u = concatenate(arr[0,1:-1,1:],u,arr[-1,1:-1,1:], axis=0)
+
+	u = vstack(([arr[0,1:-1,1:]],u,[arr[-1,1:-1,1:]]))
 	# add row above and below, we have all the layers now
-	u = concatenate(arr[:,0,1:],u,arr[:,-1,1:], axis=1)
+	u = vstack(([arr[:,0,1:]],u,[arr[:,-1,1:]]))
 	# add column to the left, have all layers and rows now
-	u = concatenate(arr[:,:,0],u,axis=2)
+	u = vstack(([arr[:,:,0]],u))
 
 	# we are done, ugh
 	return u
