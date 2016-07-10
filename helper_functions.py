@@ -1,6 +1,6 @@
 # snowflake thing
 
-from numpy import ones, vstack, hstack, dstack, newaxis, shape
+from numpy import ones, vstack, hstack, dstack, newaxis, shape,array
 
 def get_nearest_neightbours_plane(arr, idx):
 	# this function is kind of obsolete
@@ -71,15 +71,23 @@ def average_nearest(arr):
 	print 'u \n' + str(u)
 
 	u = vstack(([arr[0,1:-1,1:]],u,[arr[-1,1:-1,1:]]))
+	print shape(u)
+	print shape(array([arr[0,1:-1,1:]]))
 
 	print 'u \n' + str(u)
 	# add row above and below, we have all the layers now
 	print 'slice \n' + str(arr[:,0,newaxis,1:])
 	print shape(u)
 	print shape(arr[:,0,newaxis,1:])
-	u = hstack((arr[:,0,newaxis,1:],u,arr[:,-1,newaxis,1:]))
+	print shape(arr[:,-1,newaxis,1:])
+
+	u = hstack((arr[:,0,newaxis,1:],u))
+	u = hstack((u, arr[:,-1,newaxis,1:]))
+	print 'u \n' + str(u)
 	# add column to the left, have all layers and rows now
-	u = dstack(([arr[:,:,0]],u))
+	u = dstack((arr[:,:,0,newaxis],u))
+	print 'u \n' + str(u)
+
 
 	# we are done, ugh
 	return u
