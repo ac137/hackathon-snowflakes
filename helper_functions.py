@@ -2,7 +2,7 @@
 
 # need to add weights at some point.
 
-from numpy import ones, vstack, hstack, dstack, newaxis, shape,array
+from numpy import ones, vstack, hstack, dstack, newaxis, shape, array, zeros
 
 def get_nearest_neightbours_plane(arr, idx):
 	# this function is kind of obsolete
