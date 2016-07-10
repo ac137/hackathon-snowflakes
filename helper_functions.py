@@ -1,5 +1,7 @@
 # snowflake thing
 
+# need to add weights at some point.
+
 from numpy import ones, vstack, hstack, dstack, newaxis, shape,array
 
 def get_nearest_neightbours_plane(arr, idx):
@@ -36,17 +38,28 @@ def average_nearest(arr):
 	# sum of row above, row below, 1 column to the left
 	u = arr[:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
 	# select alternating columns, exclude leftmost col, outer rows, outer layers:
-
+	# this is okay
 	v = arr[1:-1,1::2,1:-1]
 	w = arr[1:-1,2::2,1:-1]
 
 	# take alternating rows & add values from lower/upper layers
 
-	v[::2,:,:] = arr[1:-1:2,1::2,2:]
-	v[1::2,:,:] = arr[2:-1:2,1::2,:-2]
+	# odd columns
+	# add lower layer
+	v[::2,:,:] += arr[1:-1:2,1::2,2:]
+	# add upper layer
+	v[1::2,:,:] += arr[2:-1:2,1::2,:-2]
 
-	w[::2,:,:] = arr[1:-1:2,2::2,-2:]
-	w[1::2,:,:] = arr[2:-1:2,2::2,2:]
+	# even columns
+	# add upper layer
+	w[::2,:,:] += arr[1:-1:2,2::2,:-2]
+	# add lower layer
+	w[1::2,:,:] += arr[2:-1:2,2::2,2:]
+
+	# add these back into u, respecting the slicing conventions.
+
+	u[:,::2,:] += v
+	u[:,1::2,:] += w
 
 	# divide by 5 to get average
 	u /= 5. #this syntax is glorious
@@ -58,12 +71,15 @@ def average_nearest(arr):
 
 	# array sandwich - add top & bottom
 
-	u = vstack(([arr[0,1:-1,1:]],u,[arr[-1,1:-1,1:]]))
-	u = hstack((arr[:,0,newaxis,1:],u))
-	u = hstack((u, arr[:,-1,newaxis,1:]))
-	# add column to the left, have all layers and rows now
+	# add top row and bottom row:
+
+	u = vstack((arr[newaxis,0,1:,1:-1],u))
+	u = vstack((u, arr[newaxis,-1,1:,1:-1]))
+	# add column to left, have all rows missing layers
+	u = hstack((arr[:,0,newaxis,1:-1],u))
+	# have all rows, columns, add layers to top & bottom
 	u = dstack((arr[:,:,0,newaxis],u))
-	# we are done, ugh
+	u = dstack((u,arr[:,:,-1,newaxis]))
 
 	return u
 
