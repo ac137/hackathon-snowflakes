@@ -32,38 +32,22 @@ def initialize_array(side_len, b):
 
 def average_nearest(arr):
 	# welcome to slicing hell
-	# INDEXING IS LAYER, ROW, COLUMN!!!
-
+	# ROW, COLUMN, DEPTH
 	# sum of row above, row below, 1 column to the left
-	u = arr[1:-1,:-2,1:] + arr[1:-1,2:,1:] + arr[1:-1,1:-1,:-1]
-	# # average alternating columns with layer above:
-	# v = arr[1:-1,1:-1,1::2] # odd columns
-	# w = arr[1:-1,1:-1,2::2] # even columns
-	# # add layer above to alternating rows
-	# v[:,::2,:] += arr[2:,1:-1:2,1::2]
-	# # add layer below to the other rows
-	# v[:,1::2,:] += arr[0:-2,2:-1:2,1::2]
-	# # add layer below to the alternating rows
-	# w[:,::2,:] += arr[:-2,1:-1:2,2::2]
-	# # add layer above to the other rows
-	# w[:,1::2,:] += arr[2:,2:-1:2,2::2]
-	# # combine this whole ungodly mess
+	u = arr[:-2,1:,1:-1] + arr[2:,1:,1:-1] + arr[1:-1,:-1,1:-1]
+	# select alternating columns, exclude leftmost col, outer rows, outer layers:
 
-	# select even rows, excluding top & bottom rows, exclude leftmost column, top & bot layers
-	v = arr[1:-1:2,1:,1:-1]
-	# select odd rows, " 
-	w = arr[2:-1:2,1:,1:-1]
-	# add layer below to alternating cols
-	v[:,::2,:] += arr[1:-1:2,1::2,1:-1]
-	# add layer above to the other cols
-	v[:,1::2,:] += arr[1:-1:2,2::2,1:-1]
-	# add layer below to alternating cols in odd rows
-	w[:,::2,:] += arr[2:-1:2,1::2]
+	v = arr[1:-1,1::2,1:-1]
+	w = arr[1:-1,2::2,1:-1]
 
+	# take alternating rows & add values from lower/upper layers
 
+	v[::2,:,:] = arr[1:-1:2,1::2,2:]
+	v[1::2,:,:] = arr[2:-1:2,1::2,:-2]
 
-	u[:,:,::2] += v
-	u[:,:,1::2] += w
+	w[::2,:,:] = arr[1:-1:2,2::2,-2:]
+	w[1::2,:,:] = arr[2:-1:2,2::2,2:]
+
 	# divide by 5 to get average
 	u /= 5. #this syntax is glorious
 
