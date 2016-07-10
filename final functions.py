@@ -87,6 +87,19 @@ def receptive_arr(arr, z):
     new[invert(ind)] = 0
     return new
 
+def pad_ones(arr):
+    '''Function to pad an nxnxn array with ones on all sides.'''
+    sh = shape(arr)
+    one_sm = ones(sh)
+    # cube, so all side lengths the same
+    s = sh[0] + 2
+    sh2 = (s,s,s)
+    one_lg = ones(sh2)
+    lg_int = one_lg[1:-1,1:-1,1:-1]
+    lg_int -= one_sm
+    lg_int += arr
+    return one_lg
+
 def average_nearest(arr):
     '''Function to average value of cell with itself and its
         four nearest neighbours.
@@ -109,4 +122,4 @@ def average_nearest(arr):
     avg = zeros((side_len,side_len,side_len))
     avg[1:-1,1:-1,1:-1] = avg_inside
 
-    return avg    
+    return avg 
